@@ -1,0 +1,13 @@
+controllers_user:
+    resource:
+        path: ../src/User/Controller
+        namespace: App\User\Controller
+    type: attribute
+
+controllers_note:
+    resource:
+        path: ../src/Note/Controller
+        namespace: App\Note\Controller
+    type: attribute
+login_check:
+    path: /api/login

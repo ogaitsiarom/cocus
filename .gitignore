@@ -1,0 +1,12 @@
+/backend/.env
+/backend/vendor
+/api/__pycache__
+/api/.env
+/backend/.idea
+/api/.ideia
+/frontend/.env
+/frontend/.idea
+/frontend/.vscode
+/frontend/node_modules
+.DS_Store
+.idea

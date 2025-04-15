@@ -1,0 +1,73 @@
+services:
+  backend:
+    container_name: backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: "postgresql://root:password@db:5432/notes"
+    networks:
+      - dev
+
+  frontend:
+    container_name: frontend
+    platform: linux/amd64
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - node_modules:/app/node_modules
+    depends_on:
+      - db
+      - backend
+    command: ["npm", "run", "dev"]
+    networks:
+      - dev
+
+  api:
+    container_name: api
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    ports:
+      - "5050:5000"
+    volumes:
+      - ./api:/app
+    environment:
+      FLASK_ENV: development
+    command: python -m flask --app app run --host=0.0.0.0 --port=5000
+    depends_on:
+      - db
+    networks:
+      - dev
+
+  db:
+    container_name: db
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: notes
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - dev
+
+volumes:
+  db_data:
+  node_modules:
+
+networks:
+  dev:
+    driver: bridge
