@@ -5,6 +5,12 @@ namespace App\Global;
 use Carbon\Carbon;
 use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * Abstract class to handle automatic setting of timestamp fields.
+ *
+ * Provides functionality to automatically set `createdAt` and `updatedAt`
+ * timestamps on entity lifecycle events such as persist and update.
+ */
 abstract class SetTimestamps
 {
     #[ORM\Column(type: 'carbon', options: ['default' => 'CURRENT_TIMESTAMP'])]

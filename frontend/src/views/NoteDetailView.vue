@@ -54,15 +54,8 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, reactive } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { useNotesStore } from '@/stores/notes'
+import { type Note, useNotesStore } from '@/stores/notes'
 import { ApiValidationError } from '@/utils/api'
-
-interface Note {
-  id?: number
-  title: string
-  content: string
-  updatedAt?: string
-}
 
 interface ValidationErrors {
   title: string | null
@@ -83,8 +76,11 @@ const validationErrors = reactive<ValidationErrors>({
 })
 
 const note = ref<Note>({
+  id: 0,
   title: '',
   content: '',
+  createdAt: '',
+  updatedAt: ''
 })
 
 const titleState = computed(() => {
@@ -115,6 +111,7 @@ onMounted(async () => {
           title: fetchedNote.title,
           content: fetchedNote.content,
           updatedAt: fetchedNote.updatedAt,
+          createdAt: fetchedNote.createdAt
         }
       } else {
         error.value = 'Note not found'
@@ -131,11 +128,19 @@ onMounted(async () => {
   }
 })
 
+/**
+ * Resets the validation error messages for specific fields.
+ */
 const clearValidationErrors = () => {
   validationErrors.title = null
   validationErrors.content = null
 }
 
+/**
+ * Validates the details of a note, ensuring the `title` and `content` fields have minimum required lengths.
+ *
+ * @returns {boolean} True if the note passes validation, otherwise false.
+ */
 const validateNote = (): boolean => {
   clearValidationErrors()
 
@@ -154,6 +159,12 @@ const validateNote = (): boolean => {
   return isValid
 }
 
+/**
+ * Handles validation errors coming from API responses by mapping them to local validation errors.
+ *
+ * @param {any} err - The error object to be processed. Expected to be an instance of `ApiValidationError`.
+ * @returns {boolean} - Returns `true` if the error was identified as an `ApiValidationError` and processed successfully, otherwise `false`.
+ */
 const handleApiValidationErrors = (err: any): boolean => {
   if (err instanceof ApiValidationError) {
     const fieldErrors = err.getFieldErrors()
@@ -170,6 +181,9 @@ const handleApiValidationErrors = (err: any): boolean => {
   return false
 }
 
+/**
+ * Asynchronous function to save the current note, either by adding a new note or updating an existing one.
+ */
 const saveNote = async () => {
   error.value = null
   clearValidationErrors()
@@ -199,6 +213,9 @@ const saveNote = async () => {
   }
 }
 
+/**
+ * Navigates the user back to the "/notes" page.
+ */
 const goBack = () => {
   router.push('/notes')
 }

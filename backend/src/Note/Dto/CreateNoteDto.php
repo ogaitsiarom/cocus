@@ -4,9 +4,11 @@ namespace App\Note\Dto;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
+/**
+ * Data Transfer Object for creating a note.
+ */
 class CreateNoteDto
 {
-
     /**
      * @var string $title The note title
      */
@@ -32,6 +34,7 @@ class CreateNoteDto
     }
 
     /**
+     * Get the title
      * @return string
      */
     public function getTitle(): string
@@ -40,6 +43,7 @@ class CreateNoteDto
     }
 
     /**
+     * Get the content
      * @return string
      */
     public function getContent(): string

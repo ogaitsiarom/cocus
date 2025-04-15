@@ -99,10 +99,16 @@ const showDeleteModal = ref(false)
 const showLogoutModal = ref(false)
 const noteToDelete = ref<{ id: number; title: string }>({ id: 0, title: '' })
 
-const formatDate = (dateStr: string) => {
+/**
+ * Formats a date string into a human-readable format
+ *
+ * @param {string} dateStr - The date string to be formatted.
+ * @returns {string} The formatted date string or the original input string if parsing fails.
+ */
+const formatDate = (dateStr: string): string => {
   try {
     const date = new Date(dateStr)
-    return new Intl.DateTimeFormat('en-US', {
+    return new Intl.DateTimeFormat('en-GB', {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
@@ -114,19 +120,41 @@ const formatDate = (dateStr: string) => {
   }
 }
 
+/**
+ * A function that navigates to the specified note page based on its ID.
+ *
+ * @function
+ * @param {number} id - The unique identifier of the note to open.
+ */
 const openNote = (id: number) => {
   router.push(`/notes/${id}`)
 }
 
+/**
+ * Navigates the user to the 'create new note' page.
+ */
 const createNewNote = () => {
   router.push('/notes/new')
 }
 
+/**
+ * Handles the confirmation process for deleting a note.
+ * Sets the note to be deleted and triggers the display of the delete confirmation modal.
+ *
+ * @param {number} id - The unique identifier of the note to be deleted.
+ * @param {string} title - The title of the note to be deleted.
+ */
 const confirmDeleteNote = (id: number, title: string) => {
   noteToDelete.value = { id, title }
   showDeleteModal.value = true
 }
 
+/**
+ * Handles the deletion of a note after confirmation is received.
+ *
+ * @async
+ * @function
+ */
 const handleDeleteConfirmed = async () => {
   try {
     await notesStore.deleteNote(noteToDelete.value.id)
@@ -135,18 +163,27 @@ const handleDeleteConfirmed = async () => {
   }
 }
 
+/**
+ * Asynchronously refreshes the notes by invoking the fetchNotes method from the notesStore.
+ */
 const refreshNotes = async () => {
   await notesStore.fetchNotes()
 }
 
+/**
+ * Function that handles the logout process by triggering the display of a logout modal.
+ */
 const handleLogout = () => {
   showLogoutModal.value = true
 }
 
+/**
+ * Handles the logout process for the user.
+ */
 const confirmLogout = async () => {
   try {
     await authStore.logout()
-    notesStore.clearNotes() // Clear notes data
+    notesStore.clearNotes()
     await router.push('/login')
   } catch (error) {
     console.error('Error during logout:', error)

@@ -13,7 +13,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 
-
+/**
+ * Controller to manage notes.
+ */
 #[Route('/api')]
 class NoteController extends AbstractController
 {
@@ -88,10 +90,10 @@ class NoteController extends AbstractController
     public function delete(Request $request): Response
     {
         $note = $this->service->getNote($request->get('id'), $this->getUser());
-        if(!$note) {
+        if (!$note) {
             return new JsonResponse(['message' => 'Note not found'], Response::HTTP_NOT_FOUND);
         }
-        if(!$this->service->deleteNote($note[0])) {
+        if (!$this->service->deleteNote($note[0])) {
             return new JsonResponse(['message' => 'Note deleted'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
         return new JsonResponse('Note deleted', Response::HTTP_OK);

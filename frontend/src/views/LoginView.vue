@@ -50,7 +50,14 @@ const username = ref('')
 const password = ref('')
 const authStore = useAuthStore()
 
-const handleLogin = async () => {
+/**
+ * Handles the user login process asynchronously.
+ *
+ * @function
+ * @async
+ * @returns {Promise<void>} A promise that resolves when the login operation and navigation are complete.
+ */
+const handleLogin = async (): Promise<void> => {
   const success = await authStore.login(username.value, password.value)
   if (success) {
     await router.push('/notes')

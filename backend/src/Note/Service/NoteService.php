@@ -57,7 +57,7 @@ class NoteService
     /**
      * Update a note
      * @param Note $note
-     * @param CreateNoteDto $createNoteDto
+     * @param UpdateNoteDto $createNoteDto
      * @return Note
      */
     public function updateNote(Note $note, UpdateNoteDto $createNoteDto): Note

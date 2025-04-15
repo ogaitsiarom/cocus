@@ -4,6 +4,9 @@ namespace App\Note\Dto;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
+/**
+ * Data Transfer Object for updating a note.
+ */
 class UpdateNoteDto
 {
     /**
@@ -31,6 +34,7 @@ class UpdateNoteDto
     }
 
     /**
+     * Get the title
      * @return string
      */
     public function getTitle(): string
@@ -39,6 +43,7 @@ class UpdateNoteDto
     }
 
     /**
+     * Get the content
      * @return string
      */
     public function getContent(): string

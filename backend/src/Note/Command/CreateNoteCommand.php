@@ -11,6 +11,12 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 
+/**
+ * Symfony Console Command for creating a new note.
+ *
+ * This command interacts with the user to input a title, content, and user ID for the note.
+ * It verifies the existence of the user in the database before persisting the note.
+ */
 #[AsCommand(
     name: 'app:add-note',
     description: 'Creates a new note.',

@@ -5,6 +5,9 @@ namespace App\Note\Dto;
 
 use Carbon\Carbon;
 
+/**
+ * Data transfer object to return on responses
+ */
 class NoteDto
 {
     public function __construct(

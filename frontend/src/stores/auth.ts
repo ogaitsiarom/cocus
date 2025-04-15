@@ -1,4 +1,3 @@
-// src/stores/auth.ts
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { api } from '@/utils/api'
@@ -7,6 +6,9 @@ interface LoginResponse {
   token: string
 }
 
+/**
+ * A Pinia store for managing authentication states and actions.
+ */
 export const useAuthStore = defineStore('auth', () => {
   const isAuthenticated = ref(false)
   const username = ref('')
@@ -14,6 +16,14 @@ export const useAuthStore = defineStore('auth', () => {
   const error = ref<string | null>(null)
   const isLoading = ref(false)
 
+  /**
+   * Sends a login request to the server with the provided user credentials.
+   *
+   * @param {string} user - The username of the user attempting to log in.
+   * @param {string} password - The password of the user attempting to log in.
+   * @return {Promise<LoginResponse>} A promise that resolves to the server's response containing login details or user authentication information.
+   * @throws {Error} Throws an error if the server response is not successful or if the response contains an error message.
+   */
   async function loginRequest(user: string, password: string): Promise<LoginResponse> {
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
     const response = await fetch(`${apiBaseUrl}/api/login`, {
@@ -45,7 +55,14 @@ export const useAuthStore = defineStore('auth', () => {
     return await response.json()
   }
 
-  async function login(user: string, password: string) {
+  /**
+   * Authenticates a user with the provided credentials and updates the application's session state.
+   *
+   * @param {string} user - The username of the user attempting to log in.
+   * @param {string} password - The password of the user attempting to log in.
+   * @return {Promise<boolean>} A promise that resolves to `true` if the login was successful, or `false` if it failed.
+   */
+  async function login(user: string, password: string): Promise<boolean> {
     isLoading.value = true
     error.value = null
 
@@ -73,7 +90,12 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  async function logout() {
+  /**
+   * Logs out the current user by clearing authentication data and resetting user state.
+   *
+   * @return {Promise<boolean>} A promise that resolves to `true` if the logout is successful (client-side state is cleared), or `false` if an error occurs.
+   */
+  async function logout(): Promise<boolean> {
     isLoading.value = true
     error.value = null
 
@@ -103,24 +125,10 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  async function fetchUserProfile() {
-    if (!isAuthenticated.value) return null
-
-    isLoading.value = true
-    error.value = null
-
-    try {
-      const profile = await api.get('api/user/profile')
-      return profile
-    } catch (err) {
-      console.error('Error fetching user profile:', err)
-      error.value = err instanceof Error ? err.message : 'Failed to load user profile'
-      return null
-    } finally {
-      isLoading.value = false
-    }
-  }
-
+  /**
+   * A function that initializes application state based on session storage data.
+   * It checks whether the user is authenticated and retrieves stored values.
+   */
   const initializeFromSession = () => {
     if (sessionStorage.getItem('isAuthenticated') === 'true') {
       isAuthenticated.value = true
@@ -131,11 +139,22 @@ export const useAuthStore = defineStore('auth', () => {
 
   initializeFromSession()
 
-  function getAuthHeader() {
+  /**
+   * Generates an authorization header containing a Bearer token.
+   *
+   * @return {Object} An object representing the authorization header with the Bearer token.
+   */
+  function getAuthHeader() : Object {
     return { Authorization: `Bearer ${token.value}` }
   }
 
-  function hasValidToken() {
+  /**
+   * Checks whether there is a valid token available either in the token object
+   * or stored in the session storage.
+   *
+   * @return {boolean} Returns true if a valid token exists, otherwise false.
+   */
+  function hasValidToken(): boolean {
     return !!token.value || !!sessionStorage.getItem('token')
   }
 
@@ -147,7 +166,6 @@ export const useAuthStore = defineStore('auth', () => {
     isLoading,
     login,
     logout,
-    fetchUserProfile,
     getAuthHeader,
     hasValidToken,
   }

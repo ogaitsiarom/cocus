@@ -1,11 +1,10 @@
-// src/utils/api.ts
 import { useAuthStore } from '@/stores/auth'
 import router from '@/router'
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
 
 /**
- * Symfony validation violation structure
+ * Represents a validation violation that occurs during data validation processes.s
  */
 interface ValidationViolation {
   propertyPath: string
@@ -16,7 +15,7 @@ interface ValidationViolation {
 }
 
 /**
- * Custom error class for API validation errors
+ * Represents an API validation error that includes a status code and specific field violations.
  */
 export class ApiValidationError extends Error {
   status: number
@@ -78,8 +77,7 @@ export const api = {
   /**
    * Base request method that handles authentication and errors
    */
-  async request<T>(method: string, endpoint: string, data?: any): Promise<T> {
-    // Don't use useAuthStore in composition API outside of setup
+  async request<T>(method: string, endpoint: string, data?: never): Promise<T> {
     const authStore = useAuthStore()
 
     const url = `${apiBaseUrl}${endpoint.startsWith('/') ? endpoint : '/' + endpoint}`
@@ -98,22 +96,16 @@ export const api = {
 
     const response = await fetch(url, options)
 
-    // Handle unauthorized response (401)
     if (response.status === 401) {
-      // Clear auth data
       await authStore.logout()
-
-      // Redirect to login
-      router.push('/login')
+      await router.push('/login')
 
       throw new Error('Your session has expired. Please log in again.')
     }
 
-    // Special handling for error responses
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({ detail: 'Unknown error' }))
 
-      // Handle Symfony validation errors (422)
       if (response.status === 422 && errorData.violations) {
         throw new ApiValidationError(
           errorData.detail || 'Validation failed',
@@ -122,16 +114,13 @@ export const api = {
         )
       }
 
-      // Handle other API errors
       throw new Error(errorData.detail || errorData.title || `API error: ${response.status}`)
     }
 
-    // Handle empty responses
     if (response.status === 204) {
       return {} as T
     }
 
-    // Parse JSON response
     try {
       return await response.json()
     } catch (error) {

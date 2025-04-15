@@ -2,7 +2,10 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { api } from '@/utils/api'
 
-interface Note {
+/**
+ * Represents a note with an identifier, title, content, and timestamps for creation and last update.
+ */
+export interface Note {
   id: number
   title: string
   content: string
@@ -10,12 +13,20 @@ interface Note {
   updatedAt: string
 }
 
+/**
+ * Pinia Store managing notes functionality and state within the application.
+ */
 export const useNotesStore = defineStore('notes', () => {
   const notes = ref<Note[]>([])
   const isLoading = ref(false)
   const error = ref<string | null>(null)
 
-  async function fetchNotes() {
+  /**
+   * Fetches notes from the API and updates the state with the retrieved data, handles loading state, and captures any errors encountered during the process.
+   *
+   * @return {Promise<void>} A promise that resolves after the notes are fetched and the state is updated.
+   */
+  async function fetchNotes(): Promise<void> {
     isLoading.value = true
     error.value = null
 
@@ -28,7 +39,15 @@ export const useNotesStore = defineStore('notes', () => {
     }
   }
 
-  async function addNote(title: string, content: string) {
+  /**
+   * Adds a new note with the specified title and content by making an API request.
+   *
+   * @param {string} title - The title of the note to be added.
+   * @param {string} content - The content of the note to be added.
+   * @return {Promise<Note>} A promise that resolves to the newly added note object.
+   * @throws {Error} Throws an error if the API request fails.
+   */
+  async function addNote(title: string, content: string): Promise<Note> {
     isLoading.value = true
     error.value = null
 
@@ -44,7 +63,16 @@ export const useNotesStore = defineStore('notes', () => {
     }
   }
 
-  async function updateNote(id: number, title: string, content: string) {
+  /**
+   * Updates an existing note with the given title and content.
+   *
+   * @param {number} id - The unique identifier of the note to be updated.
+   * @param {string} title - The new title for the note.
+   * @param {string} content - The new content for the note.
+   * @return {Promise<Note>} A promise that resolves with the updated note object.
+   * @throws {Error} Throws an error if the update operation fails.
+   */
+  async function updateNote(id: number, title: string, content: string): Promise<Note> {
     isLoading.value = true
     error.value = null
 
@@ -65,7 +93,13 @@ export const useNotesStore = defineStore('notes', () => {
     }
   }
 
-  async function deleteNote(id: number) {
+  /**
+   * Deletes a note by its ID.
+   *
+   * @param {number} id - The ID of the note to be deleted.
+   * @return {Promise<boolean>} A promise that resolves to true if the note is successfully deleted, or throws an error if the operation fails.
+   */
+  async function deleteNote(id: number): Promise<boolean> {
     isLoading.value = true
     error.value = null
 
@@ -82,7 +116,13 @@ export const useNotesStore = defineStore('notes', () => {
     }
   }
 
-  async function getNote(id: number) {
+  /**
+   * Fetches a note by its ID. If the note is already loaded, it is returned from the cache (list). Otherwise, it fetches the note from the API.
+   *
+   * @param {number} id - The unique identifier of the note to retrieve.
+   * @return {Promise<Note>} A promise that resolves to the note object or rejects with an error.
+   */
+  async function getNote(id: number): Promise<Note> {
     const existingNote = notes.value.find((note) => note.id === id)
     if (existingNote) {
       return existingNote
