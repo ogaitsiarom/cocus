@@ -22,7 +22,7 @@ def get_notes():
 def create_note():
     data = request.json
     note = NoteService.create_note(data['title'], data['content'], request.user)
-    return jsonify({'id': note.id, 'title': note.title}), 201
+    return jsonify({'id': note.id, 'title': note.title, 'content': note.content}), 201
 
 
 @notes_bp.route('/note/<int:note_id>', methods=['PUT'])
