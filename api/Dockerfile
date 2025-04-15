@@ -1,4 +1,4 @@
-FROM python:3.11
+FROM python:3.12
 
 WORKDIR /app
 
@@ -8,3 +8,4 @@ RUN pip install -r requirements.txt
 COPY . .
 
 EXPOSE 5000
+

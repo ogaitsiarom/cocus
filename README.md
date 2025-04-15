@@ -77,7 +77,7 @@
 > For this solution, I have used BootstrapVue3.
 >
 >
-> ## Api (Flask with python 3.12): 
+> ## Api (Flask with python 3.13): 
 > - This is the most simple part, since I didn't had time to make it more complex
 > - Folder structure:
 >   - app

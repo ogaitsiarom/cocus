@@ -7,14 +7,14 @@ notes_bp = Blueprint('note', __name__, url_prefix='/api')
 @notes_bp.route('/note/<int:note_id>', methods=['GET'])
 @jwt_required
 def get_note(note_id):
-    notes = NoteService.get_note(note_id, request.user)
-    return jsonify([{'id': n.id, 'title': n.title, 'content': n.content} for n in notes])
+    note = NoteService.get_note(note_id, request.user)
+    return jsonify({'id': note.id, 'title': note.title, 'content': note.content, 'createdAt': note.created_at, 'updatedAt': note.updated_at})
 
 @notes_bp.route('/notes', methods=['GET'])
 @jwt_required
 def get_notes():
     notes = NoteService.get_all_notes(request.user)
-    return jsonify([{'id': n.id, 'title': n.title, 'content': n.content} for n in notes])
+    return jsonify([{'id': n.id, 'title': n.title, 'content': n.content, 'createdAt': n.created_at, 'updatedAt': n.updated_at} for n in notes])
 
 
 @notes_bp.route('/note/', methods=['POST'])
@@ -22,7 +22,7 @@ def get_notes():
 def create_note():
     data = request.json
     note = NoteService.create_note(data['title'], data['content'], request.user)
-    return jsonify({'id': note.id, 'title': note.title, 'content': note.content}), 201
+    return jsonify({'id': note.id, 'title': note.title, 'content': note.content, 'createdAt': note.created_at, 'updatedAt': note.updated_at}), 201
 
 
 @notes_bp.route('/note/<int:note_id>', methods=['PUT'])
@@ -30,7 +30,7 @@ def create_note():
 def update_note(note_id):
     data = request.json
     note = NoteService.update_note(note_id, data, request.user)
-    return jsonify({'id': note.id, 'title': note.title, 'content': note.content})
+    return jsonify({'id': note.id, 'title': note.title, 'content': note.content, 'createdAt': note.created_at, 'updatedAt': note.updated_at})
 
 
 @notes_bp.route('/note/<int:note_id>', methods=['DELETE'])

@@ -39,7 +39,7 @@ services:
       context: ./api
       dockerfile: Dockerfile
     ports:
-      - "5050:5000"
+      - "5001:5000"
     volumes:
       - ./api:/app
     environment:
